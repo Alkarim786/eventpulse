@@ -1,0 +1,6 @@
+{
+  "name": "Institutional Event & KPI Automation Platform",
+  "description": "End-to-end institutional event lifecycle and academic KPI automation platform with prefix-gated student feedback, 12-rubric scoring engine, executive dashboards, and compliance reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

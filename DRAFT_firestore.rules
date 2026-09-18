@@ -1,0 +1,145 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    function incoming() {
+      return request.resource.data;
+    }
+    function existing() {
+      return resource.data;
+    }
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return (request.auth != null && (
+        request.auth.token.email == 'coderkareemalmohammed@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      ));
+    }
+
+    // Connectivity test probe
+    match /test/{testId} {
+      allow read: if true;
+    }
+
+    // Validation helpers
+    function isValidEvent(data) {
+      return data.id is number &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 300 &&
+             data.event_type is string && (
+               data.event_type == 'FDP' || data.event_type == 'WORKSHOP' || data.event_type == 'SEMINAR' ||
+               data.event_type == 'CONFERENCE' || data.event_type == 'IV' || data.event_type == 'HACKATHON' ||
+               data.event_type == 'GUEST_LECTURE'
+             ) &&
+             data.department_id is string && data.department_id.size() <= 20 &&
+             data.date_start is string && data.date_start.size() <= 30 &&
+             data.date_end is string && data.date_end.size() <= 30 &&
+             data.venue_mode is string && (data.venue_mode == 'ONLINE' || data.venue_mode == 'OFFLINE' || data.venue_mode == 'HYBRID') &&
+             data.description is string && data.description.size() <= 5000;
+    }
+
+    function isValidSpeaker(data) {
+      return data.id is string && data.id.size() <= 100 &&
+             data.event_id is number &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
+             data.designation is string && data.designation.size() <= 150 &&
+             data.organization is string && data.organization.size() <= 200;
+    }
+
+    function isValidFeedback(data) {
+      return data.id is string && data.id.size() <= 100 &&
+             data.event_id is number &&
+             data.register_no is string && data.register_no.size() > 0 && data.register_no.size() <= 50 &&
+             data.satisfaction_score is number && data.satisfaction_score >= 1 && data.satisfaction_score <= 5 &&
+             data.content_quality_score is number && data.content_quality_score >= 1 && data.content_quality_score <= 5 &&
+             data.speaker_effectiveness_score is number && data.speaker_effectiveness_score >= 1 && data.speaker_effectiveness_score <= 5 &&
+             data.organization_quality_score is number && data.organization_quality_score >= 1 && data.organization_quality_score <= 5 &&
+             data.knowledge_gain_score is number && data.knowledge_gain_score >= 1 && data.knowledge_gain_score <= 5 &&
+             data.objective_clarity_met is bool &&
+             data.submitted_at is string && data.submitted_at.size() <= 50;
+    }
+
+    function isValidMedia(data) {
+      return data.id is string && data.id.size() <= 100 &&
+             data.event_id is number &&
+             data.media_type is string && (
+               data.media_type == 'CIRCULAR' || data.media_type == 'PHOTO' || data.media_type == 'REPORT' ||
+               data.media_type == 'SPEAKER_CV' || data.media_type == 'ATTENDANCE_RECORD'
+             ) &&
+             data.original_filename is string && data.original_filename.size() <= 255 &&
+             data.file_url is string && data.file_url.size() <= 1000;
+    }
+
+    function isValidMetrics(data) {
+      return data.event_id is number &&
+             data.final_kpi_score is number && data.final_kpi_score >= 0 && data.final_kpi_score <= 100 &&
+             data.final_grade is string && (
+               data.final_grade == 'Excellent' || data.final_grade == 'Good' ||
+               data.final_grade == 'Satisfactory' || data.final_grade == 'Needs Improvement'
+             );
+    }
+
+    function isValidNotification(data) {
+      return data.id is string && data.id.size() <= 100 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.message is string && data.message.size() <= 1000 &&
+             data.type is string && (
+               data.type == 'circular' || data.type == 'feedback' || data.type == 'audit' ||
+               data.type == 'deadline' || data.type == 'system'
+             ) &&
+             data.read is bool;
+    }
+
+    // Collections
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if isValidId(eventId) && isValidEvent(incoming());
+      allow update: if isValidId(eventId) && isValidEvent(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /speakers/{speakerId} {
+      allow read: if true;
+      allow create: if isValidId(speakerId) && isValidSpeaker(incoming());
+      allow update: if isValidId(speakerId) && isValidSpeaker(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /feedbacks/{feedbackId} {
+      allow read: if true;
+      allow create: if isValidId(feedbackId) && isValidFeedback(incoming());
+      // Feedback submissions are immutable
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    match /media/{mediaId} {
+      allow read: if true;
+      allow create: if isValidId(mediaId) && isValidMedia(incoming());
+      allow update: if isValidId(mediaId) && isValidMedia(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /metrics/{metricsId} {
+      allow read: if true;
+      allow create, update: if isValidId(metricsId) && isValidMetrics(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow create, update: if isValidId(notificationId) && isValidNotification(incoming());
+      allow delete: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="pwaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4338CA" />
+      <stop offset="100%" stop-color="#6366F1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#4338CA" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#pwaGrad)" />
+  <g filter="url(#shadow)" fill="#FFFFFF">
+    <!-- Academic Cap & KPI Automation Emblem -->
+    <path d="M256 120 L416 200 L256 280 L96 200 Z" />
+    <path d="M140 230 L140 310 C140 360 210 392 256 392 C302 392 372 360 372 310 L372 230 L256 288 Z" opacity="0.9" />
+    <path d="M396 220 L396 340 A12 12 0 0 1 372 340 L372 232 Z" opacity="0.8" />
+    <!-- KPI Analytics Bars inside badge -->
+    <rect x="200" y="300" width="20" height="40" rx="6" fill="#10B981" />
+    <rect x="236" y="275" width="20" height="65" rx="6" fill="#F59E0B" />
+    <rect x="272" y="255" width="20" height="85" rx="6" fill="#6366F1" />
+  </g>
+</svg>

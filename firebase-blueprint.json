@@ -1,0 +1,160 @@
+{
+  "entities": {
+    "CampusEvent": {
+      "title": "CampusEvent",
+      "description": "Institutional academic event, workshop, symposium, or conference",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number", "description": "Numeric event identifier" },
+        "name": { "type": "string", "maxLength": 300, "description": "Title of the event" },
+        "event_type": { "type": "string", "enum": ["FDP", "WORKSHOP", "SEMINAR", "CONFERENCE", "IV", "HACKATHON", "GUEST_LECTURE"] },
+        "department_id": { "type": "string", "maxLength": 20 },
+        "date_start": { "type": "string", "maxLength": 30 },
+        "date_end": { "type": "string", "maxLength": 30 },
+        "venue_mode": { "type": "string", "enum": ["ONLINE", "OFFLINE", "HYBRID"] },
+        "venue_details": { "type": "string", "maxLength": 500 },
+        "feedback_open": { "type": "boolean" },
+        "created_by_coordinator_id": { "type": "string", "maxLength": 100 },
+        "coordinator_name": { "type": "string", "maxLength": 150 },
+        "coordinator_designation": { "type": "string", "maxLength": 150 },
+        "coordinator_email": { "type": "string", "maxLength": 150 },
+        "coordinator_phone": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "objective_statement": { "type": "string", "maxLength": 3000 },
+        "featured_banner": { "type": "boolean" },
+        "banner_image_url": { "type": "string", "maxLength": 1000 },
+        "circular_url": { "type": "string", "maxLength": 1000 },
+        "digital_signature": { "type": "string", "maxLength": 50000 },
+        "signature_timestamp": { "type": "string", "maxLength": 50 },
+        "audit_completed": { "type": "boolean" }
+      },
+      "required": ["id", "name", "event_type", "department_id", "date_start", "date_end", "venue_mode", "description"]
+    },
+    "EventSpeaker": {
+      "title": "EventSpeaker",
+      "description": "Distinguished speaker, keynote lecturer, or industry expert",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "event_id": { "type": "number" },
+        "name": { "type": "string", "maxLength": 150 },
+        "designation": { "type": "string", "maxLength": 150 },
+        "organization": { "type": "string", "maxLength": 200 },
+        "contact_mobile": { "type": "string", "maxLength": 50 },
+        "contact_email": { "type": "string", "maxLength": 150 },
+        "profile_summary": { "type": "string", "maxLength": 3000 },
+        "is_industry_expert": { "type": "boolean" },
+        "avatar_url": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["id", "event_id", "name", "designation", "organization"]
+    },
+    "EventFeedback": {
+      "title": "EventFeedback",
+      "description": "Student evaluation and accreditation survey submission",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "event_id": { "type": "number" },
+        "register_no": { "type": "string", "maxLength": 50 },
+        "satisfaction_score": { "type": "number" },
+        "content_quality_score": { "type": "number" },
+        "speaker_effectiveness_score": { "type": "number" },
+        "organization_quality_score": { "type": "number" },
+        "knowledge_gain_score": { "type": "number" },
+        "objective_clarity_met": { "type": "boolean" },
+        "suggestions": { "type": "string", "maxLength": 2000 },
+        "acquired_skills": { "type": "string", "maxLength": 2000 },
+        "submitted_at": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "event_id", "register_no", "satisfaction_score", "content_quality_score", "speaker_effectiveness_score", "organization_quality_score", "knowledge_gain_score", "submitted_at"]
+    },
+    "EventMedia": {
+      "title": "EventMedia",
+      "description": "Institutional documentation, brochures, signed circulars, photos",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "event_id": { "type": "number" },
+        "media_type": { "type": "string", "enum": ["CIRCULAR", "PHOTO", "REPORT", "SPEAKER_CV", "ATTENDANCE_RECORD"] },
+        "original_filename": { "type": "string", "maxLength": 255 },
+        "file_url": { "type": "string", "maxLength": 1000 },
+        "thumbnail_url": { "type": "string", "maxLength": 1000 },
+        "file_size_bytes": { "type": "number" },
+        "mime_type": { "type": "string", "maxLength": 100 },
+        "uploaded_at": { "type": "string", "maxLength": 50 },
+        "storage_path": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["id", "event_id", "media_type", "original_filename", "file_url"]
+    },
+    "EventMetrics": {
+      "title": "EventMetrics",
+      "description": "NAAC 12-rubric dimension metrics and NIRF performance tally",
+      "type": "object",
+      "properties": {
+        "event_id": { "type": "number" },
+        "target_participants": { "type": "number" },
+        "achieved_participants": { "type": "number" },
+        "target_external": { "type": "number" },
+        "achieved_external": { "type": "number" },
+        "target_internal": { "type": "number" },
+        "achieved_internal": { "type": "number" },
+        "faculty_participants": { "type": "number" },
+        "budget_allocated": { "type": "number" },
+        "budget_spent": { "type": "number" },
+        "sponsorship_funds": { "type": "number" },
+        "certificates_issued_pct": { "type": "number" },
+        "ideas_projects_count": { "type": "number" },
+        "research_papers_count": { "type": "number" },
+        "internships_linkages_count": { "type": "number" },
+        "social_media_reach_count": { "type": "number" },
+        "hands_on_verified": { "type": "boolean" },
+        "curriculum_alignment_score": { "type": "number" },
+        "collaborations_count": { "type": "number" },
+        "final_kpi_score": { "type": "number" },
+        "final_grade": { "type": "string", "enum": ["Excellent", "Good", "Satisfactory", "Needs Improvement"] }
+      },
+      "required": ["event_id", "final_kpi_score", "final_grade"]
+    },
+    "NotificationItem": {
+      "title": "NotificationItem",
+      "description": "System broadcast or institutional alert",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 200 },
+        "message": { "type": "string", "maxLength": 1000 },
+        "type": { "type": "string", "enum": ["circular", "feedback", "audit", "deadline", "system"] },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "read": { "type": "boolean" },
+        "link": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["id", "title", "message", "type", "timestamp", "read"]
+    }
+  },
+  "firestore": {
+    "/events/{eventId}": {
+      "schema": "CampusEvent",
+      "description": "Collection of institutional campus events and conferences"
+    },
+    "/speakers/{speakerId}": {
+      "schema": "EventSpeaker",
+      "description": "Registered keynote speakers and faculty resource persons"
+    },
+    "/feedbacks/{feedbackId}": {
+      "schema": "EventFeedback",
+      "description": "Student survey feedback entries and scoring responses"
+    },
+    "/media/{mediaId}": {
+      "schema": "EventMedia",
+      "description": "Institutional media assets, signed circulars, and event photo archives"
+    },
+    "/metrics/{metricsId}": {
+      "schema": "EventMetrics",
+      "description": "KPI analytics and NAAC 12-rubric calculated aggregates per event"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "NotificationItem",
+      "description": "Institutional notification dispatch logs and audit updates"
+    }
+  }
+}
